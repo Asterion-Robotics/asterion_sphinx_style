@@ -1,0 +1,82 @@
+# Build on everything, publish only on a tag.
+#
+# The version is never written down: hatch-vcs derives it from the git tag, so a
+# release is `git tag vX.Y.Z && git push --tags` and nothing can drift. Two
+# consequences shape this file -- the checkout must be unshallow (a shallow one
+# hides tags and silently builds 0.0.0), and an off-tag or dirty build produces a
+# PEP 440 *local* version (`0.1.0.dev2+g1234abc`) which PyPI rejects. The guard
+# below turns that into a clear failure instead of a confusing upload error.
+name: publish
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # hatch-vcs reads tags
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build sdist and wheel
+        run: uv build
+
+      # A sphinx extension that fails to import is a broken release, and nothing
+      # else here would catch it: there is no test suite to run.
+      - name: Smoke-test the wheel
+        run: |
+          uv run --isolated --no-project --with dist/*.whl \
+            python -c "import asterion_sphinx_style as s; print(s.__version__); assert s.LOGO.is_file()"
+
+      - name: Check the version is publishable
+        run: |
+          version=$(ls dist/*.whl | head -1 | cut -d- -f2)
+          echo "built version: $version"
+          case "$version" in
+            *+*|*dev*)
+              echo "::error::'$version' is a local or dev version; PyPI will reject it."
+              echo "Tag a clean tree: git tag vX.Y.Z && git push --tags"
+              exit 1 ;;
+          esac
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME#v}" != "$version" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} and built version $version disagree."
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  # Split from `build` on purpose: this job has no checkout and runs no code of
+  # ours, so the OIDC token that can publish is exposed to as little as possible.
+  publish:
+    needs: build
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/asterion-sphinx-style
+    permissions:
+      id-token: write # trusted publishing; no API token to store or rotate
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
