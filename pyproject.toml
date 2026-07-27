@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "asterion-sphinx-style"
+dynamic = ["version"]
+description = "Asterion Robotics' sphinx style: a plain sphinx extension, usable in any sphinx project"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "Thibault Poignonec", email = "t.poignonec@asterion-robotics.com" }]
+keywords = ["sphinx", "theme", "documentation", "asterion"]
+classifiers = [
+    "Framework :: Sphinx :: Extension",
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+
+# Nothing ardt here, by rule: this is a sphinx extension and works in any sphinx
+# project. It carries the theme it configures, so a bare `pip install` is enough.
+dependencies = [
+    "sphinx>=7.0",
+    "sphinx-rtd-theme>=3.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/asterion_sphinx_style"]
+
+# The git tag is the only version that exists; `fallback-version` keeps a
+# .git-less source export buildable.
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+
+[tool.hatch.version.raw-options]
+version_scheme = "no-guess-dev"
+local_scheme = "node-and-date"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF", "ANN", "PTH"]

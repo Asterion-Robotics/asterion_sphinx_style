@@ -1,0 +1,92 @@
+/* Copyright 2026 Asterion Robotics
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Asterion's brand layer over sphinx-rtd-theme.
+ *
+ * Deliberately small. The theme's navigation mechanics -- the current-page
+ * tree, its expand/collapse states, its light/dark alternation -- are a tuned
+ * system, and repainting them wholesale is how a style ends up fighting the
+ * theme on every release. This restyles the surfaces that read as *brand* (the
+ * header block, the mobile bar, links) and leaves the machinery alone.
+ *
+ * Palette, sampled from the logo and the report class:
+ *   #0832F6  brand blue   wordmark        7.51:1 on white (AAA)
+ *   #030189  deep blue    gradient centre 15.33:1
+ *   #010042  navy         gradient edge   19.45:1
+ *   #DC0000  alert red    confidential     5.19:1
+ */
+
+:root {
+  --asterion-brand: #0832f6;
+  --asterion-deep: #030189;
+  --asterion-navy: #010042;
+  --asterion-alert: #dc0000;
+}
+
+/* --- brand surfaces ------------------------------------------------------ */
+
+/* Also set via `style_nav_header_background`; kept here so the block still
+   looks right if a project overrides html_theme_options wholesale. */
+.wy-side-nav-search,
+.wy-nav-top {
+  background-color: var(--asterion-deep);
+}
+
+/* The wordmark is wide and the theme sizes logos for square marks. */
+.wy-side-nav-search > a img.logo {
+  max-width: 12rem;
+  padding: 0.35rem 0;
+}
+
+/* The project name under the logo duplicates the wordmark. */
+.wy-side-nav-search > div.version {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.wy-side-nav-search input[type="text"] {
+  border-color: var(--asterion-navy);
+}
+
+/* --- links --------------------------------------------------------------- */
+
+.rst-content a,
+.wy-nav-content a {
+  color: var(--asterion-brand);
+}
+
+.rst-content a:hover,
+.wy-nav-content a:hover {
+  color: var(--asterion-deep);
+}
+
+/* The theme ships purple visited links, which reads as a different palette. */
+.rst-content a:visited,
+.wy-nav-content a:visited {
+  color: var(--asterion-navy);
+}
+
+/* Headerlinks are decoration; brand blue on hover is enough. */
+.rst-content .headerlink {
+  color: var(--asterion-brand);
+}
+
+/* --- accents ------------------------------------------------------------- */
+
+.rst-content .admonition-title {
+  background-color: var(--asterion-deep);
+}
+
+.rst-content .danger .admonition-title,
+.rst-content .error .admonition-title {
+  background-color: var(--asterion-alert);
+}
+
+.rst-content .note,
+.rst-content .admonition {
+  border-left: 3px solid var(--asterion-deep);
+}
+
+.rst-content .danger,
+.rst-content .error {
+  border-left-color: var(--asterion-alert);
+}
