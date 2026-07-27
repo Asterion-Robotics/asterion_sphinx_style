@@ -2,7 +2,7 @@
 
 Sphinx style for Asterion public documentation.
 
-A plain sphinx extension. Nothing in it imports ardt, so it works in any sphinx project:
+A plain sphinx extension, usable in any sphinx project:
 
 ```python
 # conf.py
@@ -17,25 +17,13 @@ It configures [sphinx-rtd-theme](https://sphinx-rtd-theme.readthedocs.io/) rathe
 pip install "asterion-sphinx-style @ git+https://github.com/Asterion-Robotics/asterion_sphinx_style.git@v0.1.0"
 ```
 
-Not on PyPI yet, so pin a git ref. Prefer a commit sha over a tag if you care about reproducibility: a tag can be moved, and this style is applied to *every* version of a site each time it rebuilds.
+Not on PyPI yet, so pin a git ref. Prefer a commit sha over a tag if you care about reproducibility: a tag can be moved, and a style is typically applied to *every* version of a site each time it rebuilds.
 
-With ardt, the same string goes in `pipelines.docs_ci.pip_packages` so the docs builder has it, plus alongside `ardt` locally:
-
-```yaml
-pipelines:
-  docs_ci:
-    pip_packages:
-      - "asterion-sphinx-style @ git+https://github.com/Asterion-Robotics/asterion_sphinx_style.git@v0.1.0"
-```
+If a project already builds its `extensions` list elsewhere, rebind rather than mutate:
 
 ```python
-# doc/conf.py
-from ardt_doc_tasks.preset import *
 extensions = [*extensions, "asterion_sphinx_style"]
-project = "my_project"
 ```
-
-Rebind rather than `extensions.append(...)`: the star-import binds the preset's own list, so appending mutates it in place.
 
 ## Overriding
 

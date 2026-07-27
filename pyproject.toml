@@ -20,8 +20,8 @@ classifiers = [
     "Typing :: Typed",
 ]
 
-# Nothing ardt here, by rule: this is a sphinx extension and works in any sphinx
-# project. It carries the theme it configures, so a bare `pip install` is enough.
+# A sphinx extension and nothing more. It carries the theme it configures, so a
+# bare `pip install` is enough.
 dependencies = [
     "sphinx>=7.0",
     "sphinx-rtd-theme>=3.0",
