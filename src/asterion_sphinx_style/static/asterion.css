@@ -21,6 +21,18 @@
   --asterion-deep: #030189;
   --asterion-navy: #010042;
   --asterion-alert: #dc0000;
+
+  /* Sidebar tints. The theme builds its navigation out of neutral greys; these
+   * are the same lightness steps pulled toward the brand hue, so the structure
+   * survives and only the colour changes. Every pairing below clears WCAG AA. */
+  /* Both are kept light and near-neutral on purpose. A saturated blue on a
+   * saturated navy reads flat however good its contrast ratio looks: hue
+   * similarity undercuts luminance separation. Hierarchy therefore comes from
+   * tint (white caption over tinted links) rather than from dimming anything. */
+  --asterion-nav-text: #dde3ff; /* 15.28:1 on navy */
+  --asterion-nav-caption: #ffffff; /* 19.45:1 on navy, and bold + uppercase */
+  --asterion-nav-current: #eef1ff; /* the "you are here" block */
+  --asterion-nav-current-2: #dce2ff; /* one level deeper */
 }
 
 /* --- brand surfaces ------------------------------------------------------ */
@@ -47,6 +59,74 @@
   border-color: var(--asterion-navy);
 }
 
+/* --- sidebar navigation -------------------------------------------------- */
+
+/* The theme's nav is a grey system: a dark panel, and a light block marking the
+ * section you are in. That structure is good and is kept; every grey in it is
+ * re-tinted to the brand. Brand blue cannot be used as *text* on the dark panel
+ * (1.72:1 against the theme's #343131, and no better on navy), so it appears
+ * where it is legible: as the L1 heading on the light block, and as fills. */
+
+.wy-nav-side {
+  background: var(--asterion-navy);
+}
+
+.wy-menu-vertical a {
+  color: var(--asterion-nav-text);
+}
+
+.wy-menu-vertical a:hover {
+  background-color: var(--asterion-deep);
+  color: #fff;
+}
+
+.wy-menu-vertical header,
+.wy-menu-vertical p.caption {
+  color: var(--asterion-nav-caption);
+}
+
+/* The current section's block, and its L1 heading in Asterion blue. */
+.wy-menu-vertical li.current {
+  background: var(--asterion-nav-current);
+}
+
+.wy-menu-vertical li.current > a,
+.wy-menu-vertical li.on a {
+  color: var(--asterion-brand);
+  background: #fff;
+}
+
+.wy-menu-vertical li.current > a:hover,
+.wy-menu-vertical li.on a:hover {
+  background: var(--asterion-nav-current);
+}
+
+/* Descendants sit on the light block, so they take the darkest brand tone. */
+.wy-menu-vertical li.current a {
+  color: var(--asterion-navy);
+  border-right-color: var(--asterion-nav-current-2);
+}
+
+.wy-menu-vertical li.current a:hover {
+  background: var(--asterion-nav-current-2);
+}
+
+.wy-menu-vertical li.toctree-l2.current > a,
+.wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a {
+  background: var(--asterion-nav-current-2);
+}
+
+/* Expand arrows inherit from their row rather than the theme's grey ramp. */
+.wy-menu-vertical li button.toctree-expand {
+  color: var(--asterion-nav-text);
+}
+
+.wy-menu-vertical li.current > a button.toctree-expand,
+.wy-menu-vertical li.on a button.toctree-expand,
+.wy-menu-vertical li.current a button.toctree-expand {
+  color: var(--asterion-brand);
+}
+
 /* --- links --------------------------------------------------------------- */
 
 .rst-content a,
@@ -59,7 +139,8 @@
   color: var(--asterion-deep);
 }
 
-/* The theme ships purple visited links, which reads as a different palette. */
+/* The theme ships purple (#9b59b6) here, which belongs to a different palette.
+ * Navy keeps the "where have I been" affordance inside the brand. */
 .rst-content a:visited,
 .wy-nav-content a:visited {
   color: var(--asterion-navy);
