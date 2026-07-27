@@ -1,5 +1,8 @@
 # asterion_sphinx_style
 
+[![publish](https://github.com/Asterion-Robotics/asterion_sphinx_style/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/Asterion-Robotics/asterion_sphinx_style/actions/workflows/publish.yml)
+[![pypi](https://img.shields.io/pypi/v/asterion-sphinx-style)](https://pypi.org/project/asterion-sphinx-style/)
+
 Sphinx style for Asterion public documentation.
 
 A plain sphinx extension, usable in any sphinx project:

@@ -41,17 +41,21 @@ jobs:
           uv run --isolated --no-project --with dist/*.whl \
             python -c "import asterion_sphinx_style as s; print(s.__version__); assert s.LOGO.is_file()"
 
+      # Tags only. Off a tag the version *is* a local one by design
+      # (0.1.0.post1.dev3+g1234abc), which is correct for a branch build and
+      # merely unpublishable -- failing there would paint every PR red.
       - name: Check the version is publishable
+        if: github.ref_type == 'tag'
         run: |
           version=$(ls dist/*.whl | head -1 | cut -d- -f2)
           echo "built version: $version"
           case "$version" in
             *+*|*dev*)
               echo "::error::'$version' is a local or dev version; PyPI will reject it."
-              echo "Tag a clean tree: git tag vX.Y.Z && git push --tags"
+              echo "The tag must sit on a clean tree with tags fetched."
               exit 1 ;;
           esac
-          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME#v}" != "$version" ]; then
+          if [ "${GITHUB_REF_NAME#v}" != "$version" ]; then
             echo "::error::tag ${GITHUB_REF_NAME} and built version $version disagree."
             exit 1
           fi
