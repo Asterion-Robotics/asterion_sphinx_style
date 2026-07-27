@@ -14,10 +14,8 @@ It configures [sphinx-rtd-theme](https://sphinx-rtd-theme.readthedocs.io/) rathe
 ## Install
 
 ```bash
-pip install "asterion-sphinx-style @ git+https://github.com/Asterion-Robotics/asterion_sphinx_style.git@v0.1.0"
+pip install asterion-sphinx-style
 ```
-
-Not on PyPI yet, so pin a git ref. Prefer a commit sha over a tag if you care about reproducibility: a tag can be moved, and a style is typically applied to *every* version of a site each time it rebuilds.
 
 If a project already builds its `extensions` list elsewhere, rebind rather than mutate:
 
