@@ -50,7 +50,7 @@ Sampled from the logo wordmark and `AsterionReport.cls`. Contrast is against whi
 
 ## What it does, and what it deliberately does not
 
-Sets, when unset: `html_theme`, `html_logo`, `html_favicon`, and the theme's `style_nav_header_background`. Adds one stylesheet and its own static directory (appended, so your `_static` keeps precedence).
+Sets, when unset: `html_theme`, `html_logo`, `html_favicon`, and the theme's `style_nav_header_background`. With `sphinxcontrib.mermaid` loaded, it also sets `mermaid_light_theme`, `mermaid_dark_theme` and `mermaid_init_config` to a branded `base` theme, the same in both modes: the theme's page stays white when the reader's system is dark, so a dark diagram would sit on a white page. Adds one stylesheet and its own static directory (appended, so your `_static` keeps precedence).
 
 It does **not** repaint the theme's navigation machinery — the current-page tree, expand/collapse states, light/dark alternation. That is a tuned system, and a style that rewrites it ends up fighting the theme on every release. Only surfaces that read as *brand* are touched.
 

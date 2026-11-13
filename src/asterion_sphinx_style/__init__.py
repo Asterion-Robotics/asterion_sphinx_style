@@ -81,6 +81,72 @@ LOGO = STATIC_DIR / "asterion-logo.png"
 FAVICON = STATIC_DIR / "asterion-favicon.png"
 
 
+MERMAID_THEME = "base"
+"""The one mermaid theme whose colours are all set by ``themeVariables``."""
+
+MERMAID_VARIABLES = {
+    "fontFamily": "Lato, 'Helvetica Neue', Arial, sans-serif",
+    "background": "#ffffff",
+    "primaryColor": "#ffffff",
+    "primaryTextColor": "#1d1d1b",
+    "primaryBorderColor": DEEP_BLUE,
+    "secondaryColor": "#eef1ff",
+    "tertiaryColor": "#f6f7fb",
+    "lineColor": "#4a4f6a",
+    "textColor": "#1d1d1b",
+    "clusterBkg": "#f6f7fb",
+    "clusterBorder": "#c5cae6",
+    "titleColor": DEEP_BLUE,
+    "edgeLabelBackground": "#ffffff",
+    "nodeBorder": DEEP_BLUE,
+    "actorBkg": "#eef1ff",
+    "actorBorder": DEEP_BLUE,
+    "actorTextColor": NAVY,
+    "actorLineColor": "#9aa0c0",
+    "signalColor": "#1d1d1b",
+    "signalTextColor": "#1d1d1b",
+    "labelBoxBkgColor": "#eef1ff",
+    "labelBoxBorderColor": DEEP_BLUE,
+    "labelTextColor": NAVY,
+    "noteBkgColor": "#fff7d6",
+    "noteBorderColor": "#d9c46b",
+    "noteTextColor": "#1d1d1b",
+    "activationBkgColor": "#dce2ff",
+    "activationBorderColor": DEEP_BLUE,
+    "stateLabelColor": "#1d1d1b",
+    "transitionColor": "#4a4f6a",
+    "transitionLabelColor": "#1d1d1b",
+    "compositeBackground": "#f6f7fb",
+}
+"""Dark text on white and pale blue, deep-blue borders: the page's own palette."""
+
+_MERMAID_DEFAULTS = {
+    "mermaid_light_theme": "default",
+    "mermaid_dark_theme": "dark",
+    "mermaid_init_config": {"startOnLoad": False},
+}
+"""sphinxcontrib-mermaid's own defaults, which read as unset."""
+
+
+def _apply_mermaid_defaults(config: Config) -> None:
+    """Brand the diagrams, light whatever the reader's OS prefers.
+
+    The extension follows ``prefers-color-scheme``, but the theme's page is
+    always white: a reader in dark mode got white-on-black diagrams on it.
+    """
+    for name, default in _MERMAID_DEFAULTS.items():
+        if getattr(config, name) != default:
+            continue
+        if name == "mermaid_init_config":
+            config.mermaid_init_config = {
+                **default,
+                "themeVariables": MERMAID_VARIABLES,
+                "flowchart": {"curve": "basis"},
+            }
+        else:
+            setattr(config, name, MERMAID_THEME)
+
+
 def _apply_defaults(_app: Sphinx, config: Config) -> None:
     """Fill in what the project left unset. Never overwrite a deliberate choice."""
     if config.html_theme in ("", SPHINX_DEFAULT_THEME):
@@ -96,6 +162,9 @@ def _apply_defaults(_app: Sphinx, config: Config) -> None:
         options: dict[str, Any] = dict(config.html_theme_options or {})
         options.setdefault("style_nav_header_background", DEEP_BLUE)
         config.html_theme_options = options
+        # The page stays light in dark mode, so the diagrams must too.
+        if "sphinxcontrib.mermaid" in config.extensions:
+            _apply_mermaid_defaults(config)
 
 
 def _register_static(app: Sphinx) -> None:
